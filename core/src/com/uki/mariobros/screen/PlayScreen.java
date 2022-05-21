@@ -1,12 +1,13 @@
 package com.uki.mariobros.screen;
 
 
-import com.badlogic.gdx.Game;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
+import com.uki.mariobros.sprites.Mario;
 
 public class PlayScreen  implements Screen {
 
@@ -30,6 +32,7 @@ public class PlayScreen  implements Screen {
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    private Mario mario;
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -40,14 +43,15 @@ public class PlayScreen  implements Screen {
     public PlayScreen(MarioBros game){
         this.game = game;
         gameCam = new OrthographicCamera();
-        viewport = new FitViewport(MarioBros.V_WIDTH,MarioBros.V_HEIGHT,gameCam);
+        viewport = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM,MarioBros.V_HEIGHT / MarioBros.PPM ,gameCam);
         hud = new Hud(game.batch);
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
         gameCam.position.set(viewport.getWorldWidth() / 2 , viewport.getWorldHeight() / 2 , 0 );
 
-        world = new World(new Vector2(0, 0), true);
+        world = new World(new Vector2(0, -500), true);
+        this.mario = new Mario(world);
         b2dr = new Box2DDebugRenderer();
 
 
@@ -60,7 +64,7 @@ public class PlayScreen  implements Screen {
             Rectangle  rect = ((RectangleMapObject) object).getRectangle();
 
             bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight()  / 2 );
+            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight()  / 2 ) / MarioBros.PPM);
 
             body = world.createBody(bDef);
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
@@ -73,7 +77,7 @@ public class PlayScreen  implements Screen {
             Rectangle  rect = ((RectangleMapObject) object).getRectangle();
 
             bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight()  / 2 );
+            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight()  / 2 ) / MarioBros.PPM);
 
             body = world.createBody(bDef);
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
@@ -86,7 +90,7 @@ public class PlayScreen  implements Screen {
             Rectangle  rect = ((RectangleMapObject) object).getRectangle();
 
             bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight()  / 2 );
+            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight()  / 2 ) / MarioBros.PPM);
 
             body = world.createBody(bDef);
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
@@ -108,6 +112,8 @@ public class PlayScreen  implements Screen {
 
         }
 
+
+
     }
 
     @Override
@@ -118,15 +124,23 @@ public class PlayScreen  implements Screen {
     public void update(float time){        
         handleInput(time);
 
+        world.step(1/90f, 50,2);
+        gameCam.position.x = mario.b2Body.getPosition().x;
+
+
         gameCam.update();
         renderer.setView(gameCam);
-        
+
     }
 
     private void handleInput(float time) {
 
-        if( Gdx.input.isTouched())
-            gameCam.position.x += 100 * time;
+        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+            mario.b2Body.applyLinearImpulse(new Vector2(0,150f), mario.b2Body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mario.b2Body.getLinearVelocity().x <= 300)
+            mario.b2Body.applyLinearImpulse(new Vector2(60.0f,0), mario.b2Body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && mario.b2Body.getLinearVelocity().x >= -300)
+            mario.b2Body.applyLinearImpulse(new Vector2(-60.0f,0), mario.b2Body.getWorldCenter(), true);
 
 
     }
