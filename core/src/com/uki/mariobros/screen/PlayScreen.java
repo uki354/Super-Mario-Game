@@ -9,12 +9,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -22,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.sprites.Mario;
+import com.uki.mariobros.tools.B2WorldCreator;
 
 public class PlayScreen  implements Screen {
 
@@ -36,11 +35,13 @@ public class PlayScreen  implements Screen {
 
     private World world;
     private Box2DDebugRenderer b2dr;
+    private TextureAtlas atlas;
 
 
 
 
     public PlayScreen(MarioBros game){
+        atlas = new TextureAtlas("Mario_And_Enimes.pack");
         this.game = game;
         gameCam = new OrthographicCamera();
         viewport = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM,MarioBros.V_HEIGHT / MarioBros.PPM ,gameCam);
@@ -51,69 +52,16 @@ public class PlayScreen  implements Screen {
         gameCam.position.set(viewport.getWorldWidth() / 2 , viewport.getWorldHeight() / 2 , 0 );
 
         world = new World(new Vector2(0, -500), true);
-        this.mario = new Mario(world);
+        this.mario = new Mario(world, this);
         b2dr = new Box2DDebugRenderer();
 
-
-        BodyDef bDef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fDef = new FixtureDef();
-        Body body;
-
-        for (MapObject  object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle  rect = ((RectangleMapObject) object).getRectangle();
-
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight()  / 2 ) / MarioBros.PPM);
-
-            body = world.createBody(bDef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
-            fDef.shape = shape;
-            body.createFixture(fDef);
-
-        }
-
-        for (MapObject  object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle  rect = ((RectangleMapObject) object).getRectangle();
-
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight()  / 2 ) / MarioBros.PPM);
-
-            body = world.createBody(bDef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
-            fDef.shape = shape;
-            body.createFixture(fDef);
-
-        }
-
-        for (MapObject  object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle  rect = ((RectangleMapObject) object).getRectangle();
-
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight()  / 2 ) / MarioBros.PPM);
-
-            body = world.createBody(bDef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
-            fDef.shape = shape;
-            body.createFixture(fDef);
-
-        }
-
-        for (MapObject  object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle  rect = ((RectangleMapObject) object).getRectangle();
-
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight()  / 2 );
-
-            body = world.createBody(bDef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
-            fDef.shape = shape;
-            body.createFixture(fDef);
-
-        }
+        new B2WorldCreator(world, map);
 
 
+    }
 
+    public TextureAtlas getAtlas(){
+        return atlas;
     }
 
     @Override
@@ -127,22 +75,19 @@ public class PlayScreen  implements Screen {
         world.step(1/90f, 50,2);
         gameCam.position.x = mario.b2Body.getPosition().x;
 
-
+        mario.update(time);
         gameCam.update();
         renderer.setView(gameCam);
 
     }
 
     private void handleInput(float time) {
-
         if(Gdx.input.isKeyPressed(Input.Keys.UP))
             mario.b2Body.applyLinearImpulse(new Vector2(0,150f), mario.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mario.b2Body.getLinearVelocity().x <= 300)
-            mario.b2Body.applyLinearImpulse(new Vector2(60.0f,0), mario.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && mario.b2Body.getLinearVelocity().x >= -300)
-            mario.b2Body.applyLinearImpulse(new Vector2(-60.0f,0), mario.b2Body.getWorldCenter(), true);
-
-
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mario.b2Body.getLinearVelocity().x <= 85 && mario.b2Body.getLinearVelocity().y > -15)
+            mario.b2Body.applyLinearImpulse(new Vector2(80.0f, 0), mario.b2Body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && mario.b2Body.getLinearVelocity().x >= -85 && mario.b2Body.getLinearVelocity().y > -15)
+            mario.b2Body.applyLinearImpulse(new Vector2(-80.0f,0), mario.b2Body.getWorldCenter(), true);
     }
 
     @Override
@@ -155,8 +100,14 @@ public class PlayScreen  implements Screen {
 
         b2dr.render(world, gameCam.combined);
 
+
+        game.batch.setProjectionMatrix(gameCam.combined);
+        game.batch.begin();
+        mario.draw(game.batch);
+        game.batch.end();
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
     }
 
     @Override
@@ -181,6 +132,10 @@ public class PlayScreen  implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
     }
 }
