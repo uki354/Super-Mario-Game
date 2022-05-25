@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.scene.Hud;
 
 public class Brick extends  InteractiveTileObject {
 
@@ -18,5 +19,6 @@ public class Brick extends  InteractiveTileObject {
         System.out.println("BRICK");
         setCategoryFilter(MarioBros.DESTROYED_BIT);
         getCell().setTile(null);
+        Hud.addScore(200);
     }
 }
