@@ -5,6 +5,7 @@ package com.uki.mariobros.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -21,6 +22,7 @@ import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.B2WorldCreator;
+import com.uki.mariobros.tools.Sounds;
 import com.uki.mariobros.tools.WorldContactListener;
 
 public class PlayScreen  implements Screen {
@@ -33,6 +35,7 @@ public class PlayScreen  implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private Mario mario;
+    private Music music;
 
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -59,9 +62,10 @@ public class PlayScreen  implements Screen {
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
-
-
+        Sounds.getInstance().playBackgroundMusic();
     }
+
+
 
     public TextureAtlas getAtlas(){
         return atlas;

@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
+import com.uki.mariobros.tools.Sounds;
+
+import static com.uki.mariobros.tools.Sounds.SOUND_BREAK;
 
 public class Brick extends  InteractiveTileObject {
 
@@ -16,9 +19,9 @@ public class Brick extends  InteractiveTileObject {
 
     @Override
     public void onHeadHit() {
-        System.out.println("BRICK");
         setCategoryFilter(MarioBros.DESTROYED_BIT);
         getCell().setTile(null);
         Hud.addScore(200);
+        Sounds.getInstance().playSound(SOUND_BREAK);
     }
 }

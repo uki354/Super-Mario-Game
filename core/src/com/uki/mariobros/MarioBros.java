@@ -4,6 +4,7 @@ package com.uki.mariobros;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.uki.mariobros.screen.PlayScreen;
+import com.uki.mariobros.tools.Sounds;
 
 public class MarioBros extends Game {
 	public SpriteBatch batch;
@@ -16,13 +17,16 @@ public class MarioBros extends Game {
 	public static final short BRICK_BIT = 4;
 	public static final short COIN_BIT = 8;
 	public static final short DESTROYED_BIT = 16;
-
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		Sounds.getInstance();
+
 		super.setScreen(new PlayScreen(this));
 	}
+
+
 
 	@Override
 	public void render () {
@@ -31,6 +35,7 @@ public class MarioBros extends Game {
 	
 	@Override
 	public void dispose () {
+		super.dispose();
 		batch.dispose();
 	}
 }
