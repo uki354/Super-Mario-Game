@@ -21,6 +21,7 @@ import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.B2WorldCreator;
+import com.uki.mariobros.tools.WorldContactListener;
 
 public class PlayScreen  implements Screen {
 
@@ -56,6 +57,8 @@ public class PlayScreen  implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         new B2WorldCreator(world, map);
+
+        world.setContactListener(new WorldContactListener());
 
 
     }

@@ -6,13 +6,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.uki.mariobros.MarioBros;
 
-public class InteractiveTileObject {
+public abstract class InteractiveTileObject {
 
     protected World world;
     protected TiledMap map;
     protected TiledMapTile tile;
     protected Rectangle bounds;
     protected Body body;
+    protected Fixture fixture;
 
 
     public InteractiveTileObject(World world, TiledMap map, Rectangle bounds){
@@ -30,8 +31,12 @@ public class InteractiveTileObject {
         body = world.createBody(bodyDef);
         shape.setAsBox(bounds.getWidth() / 2, bounds.getHeight() /2);
         fixtureDef.shape = shape;
-        body.createFixture(fixtureDef);
+        fixture = body.createFixture(fixtureDef);
     }
+
+    public abstract void onHeadHit();
+
+
 
 
 }
