@@ -7,7 +7,9 @@ import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.tools.Sounds;
 
 public class MarioBros extends Game {
+
 	public SpriteBatch batch;
+
 	public static final int V_WIDTH = 400;
 	public static final int V_HEIGHT = 208;
 	public static final float PPM = 1;
@@ -17,6 +19,8 @@ public class MarioBros extends Game {
 	public static final short BRICK_BIT = 4;
 	public static final short COIN_BIT = 8;
 	public static final short DESTROYED_BIT = 16;
+	public static final short OBJECT_BIT = 32;
+	public static final short ENEMY_BIT = 64;
 	
 	@Override
 	public void create () {

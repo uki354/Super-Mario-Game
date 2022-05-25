@@ -1,27 +1,32 @@
 package com.uki.mariobros.tools;
 
-import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.sprites.Brick;
 import com.uki.mariobros.sprites.Coin;
 
-import java.util.stream.Stream;
+import static com.uki.mariobros.MarioBros.OBJECT_BIT;
+
 
 public class B2WorldCreator {
 
-    public B2WorldCreator(World world, TiledMap map){
-
+    public B2WorldCreator(PlayScreen screen){
 
         BodyDef bDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fDef = new FixtureDef();
+        TiledMap map = screen.getMap() ;
+        World world = screen.getWorld();
         Body body;
 
+
         //Refactor for loops
+
 
         for (RectangleMapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = object.getRectangle();
@@ -45,19 +50,20 @@ public class B2WorldCreator {
             body = world.createBody(bDef);
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() /2);
             fDef.shape = shape;
+            fDef.filter.categoryBits = OBJECT_BIT;
             body.createFixture(fDef);
 
         }
 
         for (RectangleMapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
             Rectangle  rect = object.getRectangle();
-            new Brick(world,map,rect);
+            new Brick(screen,rect);
         }
 
 
         for (RectangleMapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
             Rectangle  rect = object.getRectangle();
-            new Coin(world,map,rect);
+            new Coin(screen, rect);
         }
 
     }
