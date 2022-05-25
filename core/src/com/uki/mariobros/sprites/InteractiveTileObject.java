@@ -2,9 +2,10 @@ package com.uki.mariobros.sprites;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
-import com.uki.mariobros.MarioBros;
+
 
 public abstract class InteractiveTileObject {
 
@@ -35,6 +36,19 @@ public abstract class InteractiveTileObject {
     }
 
     public abstract void onHeadHit();
+
+    public void setCategoryFilter(short filterBit){
+        Filter filter = new Filter();
+        filter.categoryBits = filterBit;
+        fixture.setFilterData(filter);
+
+    }
+
+    public TiledMapTileLayer.Cell getCell(){
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(1);
+        return layer.getCell((int) (body.getPosition().x / 16), (int) (body.getPosition().y / 16));
+
+    }
 
 
 
