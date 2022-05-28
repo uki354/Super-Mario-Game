@@ -1,6 +1,7 @@
 package com.uki.mariobros.sprites;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -43,7 +44,9 @@ public class Goomba extends  Enemy {
             isDestroyed = true;
             setBounds(getX(),getY(),16,8);
 //            setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32,1,16,16));
+            stateTime = 0;
         }else {
+            b2Body.setLinearVelocity(velocity);
             setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - getHeight() / 2);
             setRegion(walkAnimation.getKeyFrame(stateTime, true));
         }
@@ -53,18 +56,18 @@ public class Goomba extends  Enemy {
     protected void defineEnemy() {
         BodyDef bodyDef = new BodyDef();
         //gex gety
-        bodyDef.position.set(64f, 64f);
+        bodyDef.position.set(getX(), getY());
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MarioBros.PPM);
+        shape.setRadius(8);
         fixtureDef.filter.categoryBits = MarioBros.ENEMY_BIT;
         fixtureDef.filter.maskBits = DEFAULT_BIT | COIN_BIT | BRICK_BIT | ENEMY_BIT | OBJECT_BIT | MARIO_BIT;
 
         fixtureDef.shape = shape;
-        b2Body.createFixture(fixtureDef);
+        b2Body.createFixture(fixtureDef).setUserData(this);
 
         PolygonShape polygonShape = new PolygonShape();
         Vector2[] vector2s = new Vector2[4];
@@ -80,7 +83,13 @@ public class Goomba extends  Enemy {
         b2Body.createFixture(fixtureDef).setUserData(this);
 
 
+    }
 
+    @Override
+    public void draw(Batch batch){
+        if (!isDestroyed || stateTime < 1){
+            super.draw(batch);
+        }
     }
 
     @Override

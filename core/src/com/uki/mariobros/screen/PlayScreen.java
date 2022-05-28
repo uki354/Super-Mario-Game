@@ -66,7 +66,7 @@ public class PlayScreen  implements Screen {
         world.setContactListener(new WorldContactListener());
         Sounds.getInstance().playBackgroundMusic();
 
-        goomba = new Goomba(this,.32f,.32f);
+        goomba = new Goomba(this, 550,24);
 
     }
 
@@ -92,7 +92,7 @@ public class PlayScreen  implements Screen {
     public void update(float time){        
         handleInput(time);
 
-        world.step(1/90f, 50,2);
+        world.step(1/60f, 6,2);
         gameCam.position.x = mario.b2Body.getPosition().x;
 
         hud.update(time);
