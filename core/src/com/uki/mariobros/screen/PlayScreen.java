@@ -16,9 +16,13 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.items.Item;
+import com.uki.mariobros.items.ItemDef;
+import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.sprites.Enemy;
 import com.uki.mariobros.sprites.Goomba;
@@ -26,6 +30,9 @@ import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.B2WorldCreator;
 import com.uki.mariobros.tools.Sounds;
 import com.uki.mariobros.tools.WorldContactListener;
+
+import java.util.PriorityQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen  implements Screen {
 
@@ -38,8 +45,8 @@ public class PlayScreen  implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private Mario mario;
     private Music music;
-
-
+    private Array<Item> items;
+    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
     private World world;
     private Box2DDebugRenderer b2dr;
     private B2WorldCreator creator;
@@ -69,8 +76,22 @@ public class PlayScreen  implements Screen {
         world.setContactListener(new WorldContactListener());
         Sounds.getInstance().playBackgroundMusic();
 
+        items = new Array<>();
+        itemsToSpawn = new LinkedBlockingQueue<>();
 
+    }
 
+    public void spawnItem(ItemDef itemDef){
+        itemsToSpawn.add(itemDef);
+    }
+
+    public void handleSpawningItems(){
+        if(!itemsToSpawn.isEmpty()){
+            ItemDef itemDef = itemsToSpawn.poll();
+            if(itemDef.type == Mushroom.class){
+                items.add(new Mushroom(this,itemDef.position.x, itemDef.position.y));
+            }
+        }
     }
 
 
@@ -94,6 +115,7 @@ public class PlayScreen  implements Screen {
 
     public void update(float time){        
         handleInput(time);
+        handleSpawningItems();
 
         world.step(1/60f, 6,2);
         gameCam.position.x = mario.b2Body.getPosition().x;
@@ -106,6 +128,7 @@ public class PlayScreen  implements Screen {
                 enemy.b2Body.setActive(true);
             }
         });
+        items.forEach(item -> item.update(time));
         gameCam.update();
         renderer.setView(gameCam);
 
@@ -137,6 +160,7 @@ public class PlayScreen  implements Screen {
         for (Enemy goomba : creator.getGoombas()) {
             goomba.draw(game.batch);
         }
+        items.forEach(item -> item.draw(game.batch));
 
         game.batch.end();
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);

@@ -1,11 +1,12 @@
 package com.uki.mariobros.sprites;
 
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.maps.tiled.TiledMap;
+
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Vector2;
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.items.ItemDef;
+import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.tools.Sounds;
@@ -35,6 +36,7 @@ public class Coin extends  InteractiveTileObject {
         else {
             Sounds.getInstance().playSound(SOUND_COIN);
             Hud.addScore(COIN_VALUE);
+            screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
         }
         getCell().setTile(tileSet.getTile(BLANK_COIN));
 

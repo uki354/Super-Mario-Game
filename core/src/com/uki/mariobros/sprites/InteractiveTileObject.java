@@ -16,12 +16,14 @@ public abstract class InteractiveTileObject {
     protected Rectangle bounds;
     protected Body body;
     protected Fixture fixture;
+    protected PlayScreen screen;
 
 
     public InteractiveTileObject(PlayScreen screen, Rectangle bounds){
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.bounds = bounds;
+        this.screen = screen;
 
         BodyDef bodyDef = new BodyDef();
         FixtureDef fixtureDef = new FixtureDef();
