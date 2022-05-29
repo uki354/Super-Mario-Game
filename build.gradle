@@ -19,6 +19,8 @@ buildscript {
 allprojects {
     apply plugin: "eclipse"
 
+
+
     version = '1.0'
     ext {
         appName = "Mario"
@@ -44,6 +46,11 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
+    // Added
+    apply plugin: "java"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
 
     dependencies {
         implementation project(":core")
@@ -57,11 +64,14 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java-library"
 
+        // Added
+    apply plugin: "java"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        
     }
 }
 
@@ -70,6 +80,12 @@ project(":html") {
     apply plugin: "gwt"
     apply plugin: "war"
     apply plugin: "org.gretty"
+
+    //Added
+    apply plugin: "java"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
 
 
     dependencies {

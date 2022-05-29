@@ -5,15 +5,19 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.sprites.Brick;
 import com.uki.mariobros.sprites.Coin;
+import com.uki.mariobros.sprites.Goomba;
 
 import static com.uki.mariobros.MarioBros.OBJECT_BIT;
 
 
 public class B2WorldCreator {
+
+    private Array<Goomba> goombas;
 
     public B2WorldCreator(PlayScreen screen){
 
@@ -66,5 +70,17 @@ public class B2WorldCreator {
             new Coin(screen, rect);
         }
 
+        goombas = new Array<>();
+
+        for (RectangleMapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
+            Rectangle  rect = object.getRectangle();
+            System.out.println("X: " +  rect.getX() + " Y: " + rect.y);
+            goombas.add(new Goomba(screen, rect.getX(), rect.getY()));
+        }
+
+    }
+
+    public Array<Goomba> getGoombas(){
+        return goombas;
     }
 }

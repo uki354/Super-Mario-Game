@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
+import com.uki.mariobros.sprites.Enemy;
 import com.uki.mariobros.sprites.Goomba;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.B2WorldCreator;
@@ -37,10 +38,11 @@ public class PlayScreen  implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private Mario mario;
     private Music music;
-    private Goomba goomba;
+
 
     private World world;
     private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
     private TextureAtlas atlas;
 
 
@@ -61,12 +63,13 @@ public class PlayScreen  implements Screen {
         this.mario = new Mario(this);
         b2dr = new Box2DDebugRenderer();
 
-        new B2WorldCreator(this);
+
+        creator = new B2WorldCreator(this);
 
         world.setContactListener(new WorldContactListener());
         Sounds.getInstance().playBackgroundMusic();
 
-        goomba = new Goomba(this, 550,24);
+
 
     }
 
@@ -97,7 +100,7 @@ public class PlayScreen  implements Screen {
 
         hud.update(time);
         mario.update(time);
-        goomba.update(time);
+        creator.getGoombas().forEach(enemy -> enemy.update(time));
         gameCam.update();
         renderer.setView(gameCam);
 
@@ -126,7 +129,10 @@ public class PlayScreen  implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         mario.draw(game.batch);
-        goomba.draw(game.batch);
+        for (Enemy goomba : creator.getGoombas()) {
+            goomba.draw(game.batch);
+        }
+
         game.batch.end();
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
