@@ -100,7 +100,12 @@ public class PlayScreen  implements Screen {
 
         hud.update(time);
         mario.update(time);
-        creator.getGoombas().forEach(enemy -> enemy.update(time));
+        creator.getGoombas().forEach(enemy -> {
+            enemy.update(time);
+            if(enemy.getX() < mario.getX() + 300){
+                enemy.b2Body.setActive(true);
+            }
+        });
         gameCam.update();
         renderer.setView(gameCam);
 
