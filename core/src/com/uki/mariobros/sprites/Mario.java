@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.screen.PlayScreen;
 
-import static com.uki.mariobros.MarioBros.ENEMY_HEAD_BIT;
+import static com.uki.mariobros.MarioBros.*;
 
 public class Mario extends Sprite {
 
@@ -111,7 +111,10 @@ public class Mario extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(5 / MarioBros.PPM);
         fixtureDef.filter.categoryBits = MarioBros.MARIO_BIT;
-        fixtureDef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT | MarioBros.ENEMY_BIT | MarioBros.OBJECT_BIT  | ENEMY_HEAD_BIT;
+        fixtureDef.filter.maskBits = DEFAULT_BIT | COIN_BIT
+                | BRICK_BIT | ENEMY_BIT
+                | OBJECT_BIT  | ENEMY_HEAD_BIT 
+                | ITEM_BIT;
 
 
 
