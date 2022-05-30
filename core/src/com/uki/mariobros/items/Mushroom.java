@@ -42,6 +42,7 @@ public class Mushroom extends  Item implements Comparable<Mushroom> {
     @Override
     public void useItem(Mario mario) {
         destroy();
+        mario.grow();
     }
 
     @Override
