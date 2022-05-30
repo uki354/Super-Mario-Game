@@ -1,6 +1,7 @@
 package com.uki.mariobros.tools;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -59,15 +60,13 @@ public class B2WorldCreator {
 
         }
 
-        for (RectangleMapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle  rect = object.getRectangle();
-            new Brick(screen,rect);
+        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
+            new Brick(screen,object);
         }
 
 
-        for (RectangleMapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle  rect = object.getRectangle();
-            new Coin(screen, rect);
+        for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
+            new Coin(screen, object);
         }
 
         goombas = new Array<>();

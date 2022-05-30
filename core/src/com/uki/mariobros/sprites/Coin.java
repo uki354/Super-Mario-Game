@@ -1,6 +1,7 @@
 package com.uki.mariobros.sprites;
 
 
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -21,8 +22,8 @@ public class Coin extends  InteractiveTileObject {
     private static final  int COIN_VALUE = 300;
 
 
-    public Coin(PlayScreen screen, Rectangle bounds){
-        super(screen, bounds);
+    public Coin(PlayScreen screen, MapObject object){
+        super(screen, object);
         tileSet = map.getTileSets().getTileSet("tileset_gutter");
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.COIN_BIT);
@@ -36,7 +37,9 @@ public class Coin extends  InteractiveTileObject {
         else {
             Sounds.getInstance().playSound(SOUND_COIN);
             Hud.addScore(COIN_VALUE);
-            screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
+            if(object.getProperties().containsKey("mushroom"))
+                screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
+
         }
         getCell().setTile(tileSet.getTile(BLANK_COIN));
 
