@@ -30,6 +30,8 @@ public class Mario extends Sprite {
     private boolean isMarioBig;
     private boolean runGrowAnimation;
     private boolean timeToDefineBigMario;
+    private boolean timeToRedefineMario;
+    private final Vector2 startPosition;
 
 
 
@@ -39,6 +41,7 @@ public class Mario extends Sprite {
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
+        startPosition = new Vector2(32,32);
         runningRight = true;
         bigMarioStand = new TextureRegion(screen.getAtlas().findRegion("big_mario"),0,0, 16,32);
         bigMarioJump = new TextureRegion(screen.getAtlas().findRegion("big_mario"),80,0, 16,32);
@@ -84,7 +87,16 @@ public class Mario extends Sprite {
         if(timeToDefineBigMario){
             defineBigMario();
         }
+        if(timeToRedefineMario){
+            redefineMario();
+        }
 
+    }
+    private void redefineMario(){
+        Vector2 currentPosition = b2Body.getPosition();
+        world.destroyBody(b2Body);
+        defineMario(currentPosition);
+        timeToRedefineMario = false;
     }
 
     private void defineBigMario() {
@@ -179,20 +191,23 @@ public class Mario extends Sprite {
     }
 
     private void defineMario() {
+       defineMario(startPosition);
+    }
+
+    private void defineMario(Vector2 position){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM);
+        bodyDef.position.set(position);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MarioBros.PPM);
+        shape.setRadius(5);
         fixtureDef.filter.categoryBits = MarioBros.MARIO_BIT;
         fixtureDef.filter.maskBits = DEFAULT_BIT | COIN_BIT
                 | BRICK_BIT | ENEMY_BIT
-                | OBJECT_BIT  | ENEMY_HEAD_BIT 
+                | OBJECT_BIT  | ENEMY_HEAD_BIT
                 | ITEM_BIT;
-
         fixtureDef.shape = shape;
         b2Body.createFixture(fixtureDef).setUserData(this);
 
@@ -205,10 +220,17 @@ public class Mario extends Sprite {
 
         b2Body.createFixture(fixtureDef).setUserData(this);
 
-
     }
 
     public boolean isMarioBig() {
         return isMarioBig;
+    }
+
+    public void hit(){
+        if(isMarioBig){
+            isMarioBig = false;
+            timeToRedefineMario = true;
+            setBounds(getX(),getY(),getWidth(),getHeight() / 2);
+        }
     }
 }

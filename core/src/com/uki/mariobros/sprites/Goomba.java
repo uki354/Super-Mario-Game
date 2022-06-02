@@ -39,6 +39,7 @@ public class Goomba extends  Enemy {
 
     public void update(float time){
         stateTime += time;
+        
         if(setToDestroy &&  !isDestroyed){
             world.destroyBody(b2Body);
             isDestroyed = true;
@@ -55,14 +56,14 @@ public class Goomba extends  Enemy {
     @Override
     protected void defineEnemy() {
         BodyDef bodyDef = new BodyDef();
-        //gex gety
+
         bodyDef.position.set(getX(), getY());
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(8);
+        shape.setRadius(5);
         fixtureDef.filter.categoryBits = MarioBros.ENEMY_BIT;
         fixtureDef.filter.maskBits = DEFAULT_BIT | COIN_BIT | BRICK_BIT | ENEMY_BIT | OBJECT_BIT | MARIO_BIT;
 
@@ -71,8 +72,8 @@ public class Goomba extends  Enemy {
 
         PolygonShape polygonShape = new PolygonShape();
         Vector2[] vector2s = new Vector2[4];
-        vector2s[0] = new Vector2(-5,8);
-        vector2s[1] = new Vector2(5,8);
+        vector2s[0] = new Vector2(-3,8);
+        vector2s[1] = new Vector2(3,8);
         vector2s[2] = new Vector2(-3,3);
         vector2s[3] = new Vector2(3,3);
         polygonShape.set(vector2s);
@@ -81,7 +82,6 @@ public class Goomba extends  Enemy {
         fixtureDef.restitution = 1.5f;
         fixtureDef.filter.categoryBits = ENEMY_HEAD_BIT;
         b2Body.createFixture(fixtureDef).setUserData(this);
-
 
     }
 

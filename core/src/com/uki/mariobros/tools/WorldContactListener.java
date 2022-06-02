@@ -39,7 +39,10 @@ public class WorldContactListener implements ContactListener {
                     ((Enemy) fixtureB.getUserData()).reverseVelocity(true,false);
                 break;
             case MARIO_BIT | ENEMY_BIT:
-                System.out.println("Mario died");
+                if(fixtureA.getFilterData().categoryBits == MARIO_BIT)
+                    ((Mario) fixtureA.getUserData()).hit();
+                else
+                    ((Mario) fixtureB.getUserData()).hit();
                 break;
             case ENEMY_BIT:
                 ((Enemy) fixtureA.getUserData()).reverseVelocity(true,false);
