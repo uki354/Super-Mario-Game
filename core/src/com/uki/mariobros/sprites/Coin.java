@@ -18,6 +18,7 @@ import static com.uki.mariobros.tools.Sounds.SOUND_COIN;
 public class Coin extends  InteractiveTileObject {
 
     private static TiledMapTileSet tileSet;
+    private final Sounds sounds;
     private static final int BLANK_COIN  = 28;
     private static final  int COIN_VALUE = 300;
 
@@ -27,21 +28,23 @@ public class Coin extends  InteractiveTileObject {
         tileSet = map.getTileSets().getTileSet("tileset_gutter");
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.COIN_BIT);
+        sounds = Sounds.getInstance();
 
     }
 
     @Override
-    public void onHeadHit() {
+    public void onHeadHit(Mario mario) {
         if(getCell().getTile().getId() == BLANK_COIN)
-            Sounds.getInstance().playSound(SOUND_BUMP);
+            sounds.playSound(SOUND_BUMP);
         else {
-            Sounds.getInstance().playSound(SOUND_COIN);
+            sounds.playSound(SOUND_COIN);
             Hud.addScore(COIN_VALUE);
             if(object.getProperties().containsKey("mushroom"))
-                screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
-
+                screen.spawnItem(
+                        new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
+            getCell().setTile(tileSet.getTile(BLANK_COIN));
         }
-        getCell().setTile(tileSet.getTile(BLANK_COIN));
+
 
     }
 }
