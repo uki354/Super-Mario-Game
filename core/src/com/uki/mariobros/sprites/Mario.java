@@ -8,8 +8,11 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.screen.PlayScreen;
+import com.uki.mariobros.tools.Sounds;
 
 import static com.uki.mariobros.MarioBros.*;
+import static com.uki.mariobros.tools.Sounds.SOUND_POWER_DOWN;
+import static com.uki.mariobros.tools.Sounds.SOUND_POWER_UP;
 
 public class Mario extends Sprite {
 
@@ -32,6 +35,7 @@ public class Mario extends Sprite {
     private boolean timeToDefineBigMario;
     private boolean timeToRedefineMario;
     private final Vector2 startPosition;
+    private final Sounds sounds;
 
 
 
@@ -42,6 +46,7 @@ public class Mario extends Sprite {
         previousState = State.STANDING;
         stateTimer = 0;
         startPosition = new Vector2(32,32);
+        sounds = Sounds.getInstance();
         runningRight = true;
         bigMarioStand = new TextureRegion(screen.getAtlas().findRegion("big_mario"),0,0, 16,32);
         bigMarioJump = new TextureRegion(screen.getAtlas().findRegion("big_mario"),80,0, 16,32);
@@ -140,6 +145,7 @@ public class Mario extends Sprite {
         isMarioBig = true;
         timeToDefineBigMario = true;
         setBounds(getX(),getY(),getWidth(),getHeight() * 2);
+        sounds.playSound(SOUND_POWER_UP);
     }
 
     public TextureRegion getFrame(float time){
@@ -231,6 +237,7 @@ public class Mario extends Sprite {
             isMarioBig = false;
             timeToRedefineMario = true;
             setBounds(getX(),getY(),getWidth(),getHeight() / 2);
+            sounds.playSound(SOUND_POWER_DOWN);
         }
     }
 }

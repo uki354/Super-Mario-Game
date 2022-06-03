@@ -12,8 +12,7 @@ import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.tools.Sounds;
 
-import static com.uki.mariobros.tools.Sounds.SOUND_BUMP;
-import static com.uki.mariobros.tools.Sounds.SOUND_COIN;
+import static com.uki.mariobros.tools.Sounds.*;
 
 public class Coin extends  InteractiveTileObject {
 
@@ -39,9 +38,13 @@ public class Coin extends  InteractiveTileObject {
         else {
             sounds.playSound(SOUND_COIN);
             Hud.addScore(COIN_VALUE);
-            if(object.getProperties().containsKey("mushroom"))
+            if(object.getProperties().containsKey("mushroom")) {
                 screen.spawnItem(
-                        new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
+                        new ItemDef(
+                                new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
+
+                sounds.playSound(SOUND_POWER_UP_SPAWN);
+            }
             getCell().setTile(tileSet.getTile(BLANK_COIN));
         }
 

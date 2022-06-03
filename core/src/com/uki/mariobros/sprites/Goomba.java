@@ -10,9 +10,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.screen.PlayScreen;
+import com.uki.mariobros.tools.Sounds;
 
 import static com.uki.mariobros.MarioBros.*;
+import static com.uki.mariobros.tools.Sounds.SOUND_STOMP;
 
 public class Goomba extends  Enemy {
 
@@ -21,6 +24,7 @@ public class Goomba extends  Enemy {
     private Array<TextureRegion> frames;
     private boolean setToDestroy;
     private boolean isDestroyed;
+    private Sounds sounds;
 
 
 
@@ -35,11 +39,12 @@ public class Goomba extends  Enemy {
             stateTime = 0;
             setBounds(getX(),getY(),16,16);
         }
+        sounds = Sounds.getInstance();
     }
 
     public void update(float time){
         stateTime += time;
-        
+
         if(setToDestroy &&  !isDestroyed){
             world.destroyBody(b2Body);
             isDestroyed = true;
@@ -95,6 +100,7 @@ public class Goomba extends  Enemy {
     @Override
     public void onHeadHit() {
         setToDestroy = true;
-
+        sounds.playSound(SOUND_STOMP);
+        Hud.addScore(100);
     }
 }
