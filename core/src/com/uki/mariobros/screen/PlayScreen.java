@@ -118,7 +118,9 @@ public class PlayScreen  implements Screen {
         handleSpawningItems();
 
         world.step(1/60f, 6,2);
-        gameCam.position.x = mario.b2Body.getPosition().x;
+        if(!mario.isMarioDead()) {
+            gameCam.position.x = mario.b2Body.getPosition().x;
+        }
 
         hud.update(time);
         mario.update(time);
@@ -135,12 +137,14 @@ public class PlayScreen  implements Screen {
     }
 
     private void handleInput(float time) {
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            mario.b2Body.applyLinearImpulse(new Vector2(0,150f), mario.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mario.b2Body.getLinearVelocity().x <= 85 && mario.b2Body.getLinearVelocity().y > -15)
-            mario.b2Body.applyLinearImpulse(new Vector2(80.0f, 0), mario.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && mario.b2Body.getLinearVelocity().x >= -85 && mario.b2Body.getLinearVelocity().y > -15)
-            mario.b2Body.applyLinearImpulse(new Vector2(-80.0f,0), mario.b2Body.getWorldCenter(), true);
+        if(!mario.isMarioDead()) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP))
+                mario.b2Body.applyLinearImpulse(new Vector2(0, 150f), mario.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mario.b2Body.getLinearVelocity().x <= 85 && mario.b2Body.getLinearVelocity().y > -15)
+                mario.b2Body.applyLinearImpulse(new Vector2(80.0f, 0), mario.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && mario.b2Body.getLinearVelocity().x >= -85 && mario.b2Body.getLinearVelocity().y > -15)
+                mario.b2Body.applyLinearImpulse(new Vector2(-80.0f, 0), mario.b2Body.getWorldCenter(), true);
+        }
     }
 
     @Override

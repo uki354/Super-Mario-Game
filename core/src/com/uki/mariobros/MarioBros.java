@@ -14,6 +14,7 @@ public class MarioBros extends Game {
 	public static final int V_HEIGHT = 208;
 	public static final float PPM = 1;
 
+	public static final short NOTHING_BIT = 0;
 	public static final short DEFAULT_BIT = 1;
 	public static final short MARIO_BIT = 2;
 	public static final short BRICK_BIT = 4;
@@ -24,6 +25,8 @@ public class MarioBros extends Game {
 	public static final short ENEMY_HEAD_BIT = 128;
 	public static final short ITEM_BIT = 256;
 	public static final short MARIO_HEAD_BIT = 512;
+
+
 
 
 	

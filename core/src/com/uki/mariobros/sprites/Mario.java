@@ -16,7 +16,7 @@ import static com.uki.mariobros.tools.Sounds.SOUND_POWER_UP;
 
 public class Mario extends Sprite {
 
-    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING};
+    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD};
     public State currentState;
     public State previousState;
     public World world;
@@ -36,6 +36,9 @@ public class Mario extends Sprite {
     private boolean timeToRedefineMario;
     private final Vector2 startPosition;
     private final Sounds sounds;
+    private TextureRegion marioDead;
+    private boolean isMarioDead;
+
 
 
 
@@ -75,6 +78,8 @@ public class Mario extends Sprite {
 
 
         marioJump = new TextureRegion(screen.getAtlas().findRegion("little_mario"),  80, 0, 16,16);
+        marioDead = new TextureRegion(screen.getAtlas().findRegion("little_mario"),  96, 0, 16,16);
+
 
         defineMario();
         marioStand = new TextureRegion(screen.getAtlas().findRegion("little_mario"),0,0,16,16);
@@ -152,6 +157,9 @@ public class Mario extends Sprite {
         currentState = getState();
         TextureRegion region;
         switch (currentState){
+            case DEAD:
+                region = marioDead;
+                break;
             case GROWING:
                 region = (TextureRegion) growMario.getKeyFrame(stateTimer);
                 if(growMario.isAnimationFinished(stateTimer))
@@ -168,7 +176,6 @@ public class Mario extends Sprite {
             default:
                 region = isMarioBig ? bigMarioStand : marioStand;
                 break;
-
         }
 
         if((b2Body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()){
@@ -193,6 +200,8 @@ public class Mario extends Sprite {
             return State.FALLING;
         else if(b2Body.getLinearVelocity().x != 0)
             return State.RUNNING;
+        else if(isMarioDead)
+            return State.DEAD;
         else return State.STANDING;
     }
 
@@ -231,6 +240,9 @@ public class Mario extends Sprite {
     public boolean isMarioBig() {
         return isMarioBig;
     }
+    public boolean isMarioDead(){
+        return isMarioDead;
+    }
 
     public void hit(){
         if(isMarioBig){
@@ -238,6 +250,14 @@ public class Mario extends Sprite {
             timeToRedefineMario = true;
             setBounds(getX(),getY(),getWidth(),getHeight() / 2);
             sounds.playSound(SOUND_POWER_DOWN);
+        }else{
+            sounds.playSound(Sounds.SOUND_MARIO_DIED);
+            isMarioDead = true;
+            Filter filter = new Filter();
+            filter.maskBits = NOTHING_BIT;
+            b2Body.getFixtureList().forEach(fixture -> fixture.setFilterData(filter));
+            b2Body.applyLinearImpulse(new Vector2(0, 50f), b2Body.getWorldCenter(), true);
+
         }
     }
 }

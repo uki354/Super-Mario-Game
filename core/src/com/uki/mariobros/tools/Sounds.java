@@ -20,6 +20,7 @@ public class Sounds implements Disposable {
     public static final String SOUND_POWER_DOWN = "audio/sounds/powerdown.wav";
     public static final String SOUND_POWER_UP = "audio/sounds/powerup.wav";
     public static final String SOUND_POWER_UP_SPAWN = "audio/sounds/powerup_spawn.wav";
+    public static final String SOUND_MARIO_DIED = "audio/sounds/mariodie.wav";
 
 
     private Sounds(){
@@ -40,6 +41,7 @@ public class Sounds implements Disposable {
         manager.load(SOUND_POWER_DOWN, Sound.class);
         manager.load(SOUND_POWER_UP_SPAWN, Sound.class);
         manager.load(SOUND_POWER_UP, Sound.class);
+        manager.load(SOUND_MARIO_DIED, Sound.class);
         manager.finishLoading();
     }
 
