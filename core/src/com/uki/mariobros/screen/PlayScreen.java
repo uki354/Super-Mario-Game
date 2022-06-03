@@ -170,6 +170,15 @@ public class PlayScreen  implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
+        if(gameOver()){
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
+
+    }
+
+    public boolean gameOver(){
+        return mario.isMarioDead() && mario.getStateTimer() > 3;
     }
 
     @Override
