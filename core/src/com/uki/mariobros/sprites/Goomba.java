@@ -21,10 +21,12 @@ public class Goomba extends  Enemy {
 
     private float stateTime;
     private Animation<TextureRegion> walkAnimation;
-    private Array<TextureRegion> frames;
     private boolean setToDestroy;
     private boolean isDestroyed;
-    private Sounds sounds;
+    private final Sounds sounds;
+
+    private static final String REGION_GOOMBA = "goomba";
+    public static final int GOOMBA_SCORE = 100;
 
 
 
@@ -32,14 +34,8 @@ public class Goomba extends  Enemy {
         super(screen, x, y);
         setToDestroy = false;
         isDestroyed = false;
-        frames = new Array<>();
-        for (int i = 0;  i < 2; i++){
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("goomba"), i * 16, 1, 16,16));
-            walkAnimation = new Animation<TextureRegion>(0.4f,frames);
-            stateTime = 0;
-            setBounds(getX(),getY(),16,16);
-        }
         sounds = Sounds.getInstance();
+        loadAnimation();
     }
 
     public void update(float time){
@@ -49,19 +45,27 @@ public class Goomba extends  Enemy {
             world.destroyBody(b2Body);
             isDestroyed = true;
             setBounds(getX(),getY(),16,8);
-//            setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32,1,16,16));
             stateTime = 0;
         }else {
             b2Body.setLinearVelocity(velocity);
-            setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - getHeight() / 2);
+            setCenter(b2Body.getPosition().x, b2Body.getPosition().y);
             setRegion(walkAnimation.getKeyFrame(stateTime, true));
+        }
+    }
+
+    private void loadAnimation(){
+        Array<TextureRegion> frames = new Array<>();
+        for (int i = 0;  i < 2; i++){
+            frames.add(new TextureRegion(screen.getAtlas().findRegion(REGION_GOOMBA), i * 16, 1, 16,16));
+            walkAnimation = new Animation(0.4f, frames);
+            stateTime = 0;
+            setBounds(getX(),getY(),16,16);
         }
     }
 
     @Override
     protected void defineEnemy() {
         BodyDef bodyDef = new BodyDef();
-
         bodyDef.position.set(getX(), getY());
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bodyDef);
@@ -101,6 +105,6 @@ public class Goomba extends  Enemy {
     public void onHeadHit() {
         setToDestroy = true;
         sounds.playSound(SOUND_STOMP);
-        Hud.addScore(100);
+        Hud.addScore(GOOMBA_SCORE);
     }
 }
