@@ -49,8 +49,7 @@ public class Mushroom extends  Item implements Comparable<Mushroom> {
     @Override
     public void update(float dt) {
         super.update(dt);
-//        setCenter(b2body.getPosition().x,b2body.getPosition().y);
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+        setCenter(body.getPosition().x, body.getPosition().y);
         body.setLinearVelocity(velocity);
         velocity.y = body.getLinearVelocity().y;
         body.setLinearVelocity(velocity);
