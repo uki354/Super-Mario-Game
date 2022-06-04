@@ -3,7 +3,6 @@ package com.uki.mariobros.sprites;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.items.ItemDef;
@@ -18,13 +17,16 @@ public class Coin extends  InteractiveTileObject {
 
     private static TiledMapTileSet tileSet;
     private final Sounds sounds;
+
     private static final int BLANK_COIN  = 28;
-    private static final  int COIN_VALUE = 300;
+    private static final int COIN_VALUE = 300;
+    public static final String MUSHROOM_KEY = "mushroom";
+    public static final String TILE_SET = "tileset_gutter";
 
 
     public Coin(PlayScreen screen, MapObject object){
         super(screen, object);
-        tileSet = map.getTileSets().getTileSet("tileset_gutter");
+        tileSet = map.getTileSets().getTileSet(TILE_SET);
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.COIN_BIT);
         sounds = Sounds.getInstance();
@@ -38,7 +40,7 @@ public class Coin extends  InteractiveTileObject {
         else {
             sounds.playSound(SOUND_COIN);
             Hud.addScore(COIN_VALUE);
-            if(object.getProperties().containsKey("mushroom")) {
+            if(object.getProperties().containsKey(MUSHROOM_KEY)) {
                 screen.spawnItem(
                         new ItemDef(
                                 new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
