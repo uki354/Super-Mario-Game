@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -25,13 +26,12 @@ import com.uki.mariobros.items.ItemDef;
 import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.sprites.Enemy;
-import com.uki.mariobros.sprites.Goomba;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.B2WorldCreator;
 import com.uki.mariobros.tools.Sounds;
 import com.uki.mariobros.tools.WorldContactListener;
 
-import java.util.PriorityQueue;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen  implements Screen {
@@ -60,7 +60,7 @@ public class PlayScreen  implements Screen {
         this.game = game;
         gameCam = new OrthographicCamera();
         viewport = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM,MarioBros.V_HEIGHT / MarioBros.PPM ,gameCam);
-        hud = new Hud(game.batch);
+        hud = new Hud((SpriteBatch) game.getBatch());
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
@@ -158,16 +158,16 @@ public class PlayScreen  implements Screen {
         b2dr.render(world, gameCam.combined);
 
 
-        game.batch.setProjectionMatrix(gameCam.combined);
-        game.batch.begin();
-        mario.draw(game.batch);
+        game.getBatch().setProjectionMatrix(gameCam.combined);
+        game.getBatch().begin();
+        mario.draw(game.getBatch());
         for (Enemy goomba : creator.getGoombas()) {
-            goomba.draw(game.batch);
+            goomba.draw(game.getBatch());
         }
-        items.forEach(item -> item.draw(game.batch));
+        items.forEach(item -> item.draw(game.getBatch()));
 
-        game.batch.end();
-        game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+        game.getBatch().end();
+        game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
 
         if(gameOver()){

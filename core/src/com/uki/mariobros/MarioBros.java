@@ -2,13 +2,14 @@ package com.uki.mariobros;
 
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.tools.Sounds;
 
 public class MarioBros extends Game {
 
-	public SpriteBatch batch;
+	private SpriteBatch batch;
 
 	public static final int V_WIDTH = 400;
 	public static final int V_HEIGHT = 208;
@@ -36,6 +37,10 @@ public class MarioBros extends Game {
 		Sounds.getInstance();
 
 		super.setScreen(new PlayScreen(this));
+	}
+
+	public Batch getBatch(){
+		return batch;
 	}
 
 

@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+
 import com.uki.mariobros.MarioBros;
 
 
@@ -22,16 +22,17 @@ import static com.uki.mariobros.MarioBros.V_WIDTH;
 
 public class GameOverScreen  implements Screen {
 
-    private Viewport viewport;
-    private Stage stage;
+    private final Stage stage;
+    private final Game game;
 
-    private Game game;
-
-    public GameOverScreen(Game game){
+    public GameOverScreen(MarioBros game){
         this.game = game;
-        viewport  = new FitViewport(V_WIDTH, V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, ((MarioBros) game).batch);
+        stage = new Stage(new FitViewport(V_WIDTH, V_HEIGHT, new OrthographicCamera()), game.getBatch());
+        stage.addActor(drawEndGameScreen());
 
+    }
+
+    private Table drawEndGameScreen(){
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
         Table table = new Table();
@@ -43,7 +44,7 @@ public class GameOverScreen  implements Screen {
         table.add(gameOverLabel).expandX();
         table.row();
         table.add(playAgain).expandX().padTop(10f);
-        stage.addActor(table);
+        return table;       
 
     }
 
