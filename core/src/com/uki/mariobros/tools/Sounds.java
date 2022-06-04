@@ -29,7 +29,10 @@ public class Sounds implements Disposable {
     }
 
     public static Sounds getInstance(){
-        return INSTANCE == null ? new Sounds() : INSTANCE;
+        if(INSTANCE == null){
+            INSTANCE = new Sounds();
+        }
+        return INSTANCE;
     }
 
     private void loadSoundAssets(){
