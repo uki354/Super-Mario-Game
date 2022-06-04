@@ -21,17 +21,16 @@ import static com.uki.mariobros.MarioBros.V_HEIGHT;
 import static com.uki.mariobros.MarioBros.V_WIDTH;
 
 public class GameOverScreen  implements Screen {
-
+    
     private final Stage stage;
     private final Game game;
 
     public GameOverScreen(MarioBros game){
-        this.game = game;
+        this.game = game;        
         stage = new Stage(new FitViewport(V_WIDTH, V_HEIGHT, new OrthographicCamera()), game.getBatch());
         stage.addActor(drawEndGameScreen());
-
     }
-
+    
     private Table drawEndGameScreen(){
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
@@ -45,7 +44,7 @@ public class GameOverScreen  implements Screen {
         table.row();
         table.add(playAgain).expandX().padTop(10f);
         return table;       
-
+        
     }
 
 

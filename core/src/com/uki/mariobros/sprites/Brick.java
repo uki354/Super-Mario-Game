@@ -1,9 +1,6 @@
 package com.uki.mariobros.sprites;
 
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.screen.PlayScreen;
@@ -15,6 +12,7 @@ import static com.uki.mariobros.tools.Sounds.SOUND_BUMP;
 public class Brick extends  InteractiveTileObject {
 
     private final Sounds sounds;
+    public static final int BRICK_VALUE = 200;
 
     public Brick(PlayScreen screen, MapObject object){
         super(screen,object);
@@ -30,7 +28,7 @@ public class Brick extends  InteractiveTileObject {
         }else {
             setCategoryFilter(MarioBros.DESTROYED_BIT);
             getCell().setTile(null);
-            Hud.addScore(200);
+            Hud.addScore(BRICK_VALUE);
             Sounds.getInstance().playSound(SOUND_BREAK);
         }
     }
