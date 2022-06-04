@@ -167,8 +167,8 @@ public class PlayScreen  implements Screen {
         items.forEach(item -> item.draw(game.batch));
 
         game.batch.end();
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.getStage().draw();
 
         if(gameOver()){
             game.setScreen(new GameOverScreen(game));
