@@ -11,9 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-
-import static com.uki.mariobros.MarioBros.V_HEIGHT;
-import static com.uki.mariobros.MarioBros.V_WIDTH;
+import static com.uki.mariobros.MarioBros.*;
 
 public class Hud  implements Disposable {
 
@@ -25,12 +23,23 @@ public class Hud  implements Disposable {
 
     private static  Integer score;
     private static  Label  scoreLabel;
+    private  Label levelLabel;
 
     private static final int GAME_SECONDS = 300;
 
+    private static Hud INSTANCE;
+
+    public static Hud createHud(SpriteBatch batch){
+        if(INSTANCE == null){
+           INSTANCE = new Hud(batch);
+        }else return INSTANCE;
+        return INSTANCE;
+
+    }
 
 
-    public Hud(SpriteBatch batch){
+
+    private Hud(SpriteBatch batch){
         worldTimer = GAME_SECONDS;
         timeCount = 0;
         score = 0;
@@ -48,7 +57,7 @@ public class Hud  implements Disposable {
         countdownLabel = new Label(String.format("%03d",worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         scoreLabel = new Label(String.format("%06d",score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         Label timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        Label levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         Label worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         Label marioLabel = new Label("MARIO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
@@ -60,6 +69,10 @@ public class Hud  implements Disposable {
         table.add(levelLabel).expandX();
         table.add(countdownLabel).expandX();
         return table;
+    }
+
+    public void updateLevelLabel(int level){
+        levelLabel.setText(String.format("1-%01d",level));
     }
 
     public void update(float time){

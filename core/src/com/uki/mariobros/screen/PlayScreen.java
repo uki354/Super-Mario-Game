@@ -2,10 +2,10 @@ package com.uki.mariobros.screen;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -25,60 +25,69 @@ import com.uki.mariobros.items.Item;
 import com.uki.mariobros.items.ItemDef;
 import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
-import com.uki.mariobros.sprites.Enemy;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.B2WorldCreator;
 import com.uki.mariobros.tools.Sounds;
+import com.uki.mariobros.tools.UserInputHandler;
 import com.uki.mariobros.tools.WorldContactListener;
 
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.badlogic.gdx.Input.Keys.*;
+import static com.uki.mariobros.MarioBros.V_HEIGHT;
+import static com.uki.mariobros.MarioBros.V_WIDTH;
+import static com.uki.mariobros.tools.UserInputHandler.*;
+import static com.uki.mariobros.tools.UserInputHandler.Side.LEFT;
+
+
 public class PlayScreen  implements Screen {
 
-    private MarioBros game;
-    private OrthographicCamera gameCam;
-    private Viewport viewport;
-    private Hud hud;
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
-    private Mario mario;
-    private Music music;
-    private Array<Item> items;
-    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
-    private World world;
-    private Box2DDebugRenderer b2dr;
-    private B2WorldCreator creator;
-    private TextureAtlas atlas;
+    private final MarioBros game;
+    private final OrthographicCamera gameCam;
+    private final Viewport viewport;
+    private final Hud hud;
+    private final TiledMap map;
+    private final OrthogonalTiledMapRenderer renderer;
+    private final Mario mario;
+    private final Array<Item> items;
+    private final LinkedBlockingQueue<ItemDef> itemsToSpawn;
+    private final World world;
+    private final Box2DDebugRenderer b2dr;
+    private final B2WorldCreator creator;
+    private final TextureAtlas atlas;
+    private final UserInputHandler inputHandler;
+    private int currentLevel;
+
+    public static final String TEXTURE_PACK ="Mario_And_Enimes.pack";
+    public static boolean LEVEL_FINISHED = false;
 
 
 
-
-    public PlayScreen(MarioBros game){
-        atlas = new TextureAtlas("Mario_And_Enimes.pack");
+    public PlayScreen(MarioBros game, int level){
         this.game = game;
+        this.currentLevel = level;
+
+        atlas = new TextureAtlas(TEXTURE_PACK);
+
         gameCam = new OrthographicCamera();
-        viewport = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM,MarioBros.V_HEIGHT / MarioBros.PPM ,gameCam);
-        hud = new Hud((SpriteBatch) game.getBatch());
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
+        viewport = new FitViewport(V_WIDTH, V_HEIGHT,gameCam);
         gameCam.position.set(viewport.getWorldWidth() / 2 , viewport.getWorldHeight() / 2 , 0 );
+        world = new World(new Vector2(0, -200), true);
 
-        world = new World(new Vector2(0, -500), true);
+        hud = Hud.createHud((SpriteBatch) game.getBatch());
         this.mario = new Mario(this);
+
+        map = new TmxMapLoader().load("level" + level + ".tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, 1);
+
         b2dr = new Box2DDebugRenderer();
-
-
         creator = new B2WorldCreator(this);
-
         world.setContactListener(new WorldContactListener());
         Sounds.getInstance().playBackgroundMusic();
-
         items = new Array<>();
         itemsToSpawn = new LinkedBlockingQueue<>();
-
+        inputHandler = new UserInputHandler(mario);
     }
 
     public void spawnItem(ItemDef itemDef){
@@ -114,7 +123,7 @@ public class PlayScreen  implements Screen {
     }
 
     public void update(float time){        
-        handleInput(time);
+        handleInput();
         handleSpawningItems();
 
         world.step(1/60f, 6,2);
@@ -136,14 +145,17 @@ public class PlayScreen  implements Screen {
 
     }
 
-    private void handleInput(float time) {
+
+
+
+    private void handleInput() {
         if(!mario.isMarioDead()) {
-            if (Gdx.input.isKeyPressed(Input.Keys.UP))
-                mario.b2Body.applyLinearImpulse(new Vector2(0, 150f), mario.b2Body.getWorldCenter(), true);
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mario.b2Body.getLinearVelocity().x <= 85 && mario.b2Body.getLinearVelocity().y > -15)
-                mario.b2Body.applyLinearImpulse(new Vector2(80.0f, 0), mario.b2Body.getWorldCenter(), true);
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && mario.b2Body.getLinearVelocity().x >= -85 && mario.b2Body.getLinearVelocity().y > -15)
-                mario.b2Body.applyLinearImpulse(new Vector2(-80.0f, 0), mario.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(UP))
+                inputHandler.jump(Y_VEL);
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+                inputHandler.run(Side.RIGHT);
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+                inputHandler.run(LEFT);
         }
     }
 
@@ -154,16 +166,14 @@ public class PlayScreen  implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.render();
-
         b2dr.render(world, gameCam.combined);
 
 
         game.getBatch().setProjectionMatrix(gameCam.combined);
         game.getBatch().begin();
+
         mario.draw(game.getBatch());
-        for (Enemy goomba : creator.getGoombas()) {
-            goomba.draw(game.getBatch());
-        }
+        creator.getGoombas().forEach(goomba -> goomba.draw(game.getBatch()));
         items.forEach(item -> item.draw(game.getBatch()));
 
         game.getBatch().end();
@@ -174,7 +184,16 @@ public class PlayScreen  implements Screen {
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
+        if(LEVEL_FINISHED){
+            LEVEL_FINISHED = false;
+            levelUp();
+        }
 
+    }
+
+    private void levelUp(){
+        game.setScreen(new PlayScreen(game,(currentLevel++)));
+        hud.updateLevelLabel((currentLevel++));
     }
 
     public boolean gameOver(){

@@ -37,6 +37,7 @@ public class B2WorldCreator {
 
 
 
+
     public B2WorldCreator(PlayScreen screen){
         bDef = new BodyDef();
         shape = new PolygonShape();
@@ -59,7 +60,6 @@ public class B2WorldCreator {
             Rectangle  rect = rectangleMapObject.getRectangle();
             goombas.add(new Goomba(screen, rect.getX(), rect.getY()));
         });
-
     }
 
     private void createMutableObjects(int layer, PlayScreen screen){
@@ -67,6 +67,7 @@ public class B2WorldCreator {
             InteractiveTileObject obj = layer == BRICK_LAYER ? new Brick(screen, x) : new Coin(screen,x);
         });
     }
+
 
     private void createStaticObject(int layer, short categoryBit){
         map.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class).forEach(rectangleMapObject -> {
@@ -82,8 +83,6 @@ public class B2WorldCreator {
 
             body.createFixture(fDef);
         });
-
-
     }
 
     public Array<Goomba> getGoombas(){

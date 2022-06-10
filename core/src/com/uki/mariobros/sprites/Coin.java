@@ -21,6 +21,7 @@ public class Coin extends  InteractiveTileObject {
     private static final int BLANK_COIN  = 28;
     private static final int COIN_VALUE = 300;
     public static final String MUSHROOM_KEY = "mushroom";
+    public static final String LEVEL_UP_KEY = "finish";
     public static final String TILE_SET = "tileset_gutter";
 
 
@@ -46,7 +47,10 @@ public class Coin extends  InteractiveTileObject {
                                 new Vector2(body.getPosition().x, body.getPosition().y + 16), Mushroom.class));
 
                 sounds.playSound(SOUND_POWER_UP_SPAWN);
+            }else if(object.getProperties().containsKey(LEVEL_UP_KEY)){
+                PlayScreen.LEVEL_FINISHED = true;
             }
+
             getCell().setTile(tileSet.getTile(BLANK_COIN));
         }
 
