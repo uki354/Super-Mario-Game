@@ -32,6 +32,8 @@ import com.uki.mariobros.tools.UserInputHandler;
 import com.uki.mariobros.tools.WorldContactListener;
 
 
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.badlogic.gdx.Input.Keys.*;
@@ -51,7 +53,7 @@ public class PlayScreen  implements Screen {
     private final OrthogonalTiledMapRenderer renderer;
     private final Mario mario;
     private final Array<Item> items;
-    private final LinkedBlockingQueue<ItemDef> itemsToSpawn;
+    private final Queue<ItemDef> itemsToSpawn;
     private final World world;
     private final Box2DDebugRenderer b2dr;
     private final B2WorldCreator creator;
@@ -86,7 +88,7 @@ public class PlayScreen  implements Screen {
         world.setContactListener(new WorldContactListener());
         Sounds.getInstance().playBackgroundMusic();
         items = new Array<>();
-        itemsToSpawn = new LinkedBlockingQueue<>();
+        itemsToSpawn = new PriorityQueue<>();
         inputHandler = new UserInputHandler(mario);
     }
 

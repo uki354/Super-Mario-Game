@@ -54,8 +54,10 @@ public class Hud  implements Disposable {
         table.top();
         table.setFillParent(true);
 
-        countdownLabel = new Label(String.format("%03d",worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreLabel = new Label(String.format("%06d",score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+//        countdownLabel = new Label(String.format("%03d",worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+//        scoreLabel = new Label(String.format("%06d",score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        countdownLabel = new Label(worldTimer.toString(), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreLabel = new Label(score.toString(), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         Label timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         Label worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
@@ -72,21 +74,25 @@ public class Hud  implements Disposable {
     }
 
     public void updateLevelLabel(int level){
-        levelLabel.setText(String.format("1-%01d",level));
+//        levelLabel.setText(String.format("1-%01d",level));
+        levelLabel.setText("1-" + level);
     }
 
     public void update(float time){
         timeCount += time;
         if(timeCount >= 1){
             worldTimer--;
-            countdownLabel.setText(String.format("%03d", worldTimer));
+//            countdownLabel.setText(String.format("%03d", worldTimer));
+            countdownLabel.setText(worldTimer.toString());
             timeCount = 0;
         }
     }
 
     public static void addScore(int value){
         score += value;
-        scoreLabel.setText(String.format("%06d", score));
+//        scoreLabel.setText(String.format("%06d", score));
+        scoreLabel.setText(score.toString());
+
     }
 
     public Stage getStage(){
