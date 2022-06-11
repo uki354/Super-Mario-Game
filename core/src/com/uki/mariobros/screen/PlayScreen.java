@@ -194,8 +194,9 @@ public class PlayScreen  implements Screen {
     }
 
     private void levelUp(){
-        game.setScreen(new PlayScreen(game,(currentLevel++)));
-        hud.updateLevelLabel((currentLevel++));
+        currentLevel += 1;
+        game.setScreen(new TransitionScreen(game,currentLevel));
+        hud.updateLevelLabel((currentLevel));
     }
 
     public boolean gameOver(){

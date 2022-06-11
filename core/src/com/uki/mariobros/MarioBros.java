@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.uki.mariobros.screen.PlayScreen;
+import com.uki.mariobros.screen.StartScreen;
 import com.uki.mariobros.tools.Sounds;
 
 public class MarioBros extends Game {
@@ -35,7 +36,7 @@ public class MarioBros extends Game {
 		batch = new SpriteBatch();
 		Sounds.getInstance();
 
-		super.setScreen(new PlayScreen(this, 1));
+		super.setScreen(new StartScreen(this));
 	}
 
 	public Batch getBatch(){
