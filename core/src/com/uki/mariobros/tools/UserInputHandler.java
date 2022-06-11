@@ -3,6 +3,8 @@ package com.uki.mariobros.tools;
 import com.badlogic.gdx.math.Vector2;
 import com.uki.mariobros.sprites.Mario;
 
+import static com.uki.mariobros.sprites.Mario.State.*;
+
 
 public class UserInputHandler {
 
@@ -28,7 +30,7 @@ public class UserInputHandler {
 
     public void jump(Vector2 velocity){
 
-        if(mario.getState() == Mario.State.JUMPING && mario.b2Body.getLinearVelocity().y < 0 && doubleJump){
+        if((mario.getState() == JUMPING) && (mario.b2Body.getLinearVelocity().y < 0) && doubleJump){
             Vector2 previousVelocity = mario.b2Body.getLinearVelocity();
             mario.b2Body.setLinearVelocity(new Vector2(previousVelocity.x, 500));
             mario.b2Body.applyForceToCenter(velocity,true);
@@ -36,7 +38,7 @@ public class UserInputHandler {
             return;
         }
 
-        if(mario.getState().equals(Mario.State.STANDING)|| mario.getState().equals(Mario.State.RUNNING)){
+        if(mario.getState().equals(STANDING)|| mario.getState().equals(RUNNING)){
             mario.b2Body.setLinearVelocity(velocity);
             doubleJump = true;
             return;
