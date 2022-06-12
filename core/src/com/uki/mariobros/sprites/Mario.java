@@ -117,6 +117,9 @@ public class Mario extends Sprite {
         if(timeToRedefineMario){
             redefineMario();
         }
+        if(b2Body.getPosition().y < 20){
+            isMarioDead = true;
+        }
 
     }
 
