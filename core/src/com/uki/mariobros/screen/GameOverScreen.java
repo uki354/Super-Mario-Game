@@ -14,10 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.scene.Hud;
+import com.uki.mariobros.tools.HttpClient;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
 import static com.uki.mariobros.MarioBros.V_WIDTH;
+import static com.uki.mariobros.tools.HttpClient.URL;
 
 public class GameOverScreen  implements Screen {
     
@@ -58,6 +61,7 @@ public class GameOverScreen  implements Screen {
     @Override
     public void render(float delta) {
         if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            Hud.INSTANCE = null;
             game.setScreen(new PlayScreen((MarioBros) game, 1));
             dispose();
         }

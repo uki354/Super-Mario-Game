@@ -27,7 +27,7 @@ public class Hud  implements Disposable {
 
     private static final int GAME_SECONDS = 300;
 
-    private static Hud INSTANCE;
+    public static Hud INSTANCE;
 
     public static Hud createHud(SpriteBatch batch){
         if(INSTANCE == null){
@@ -37,7 +37,9 @@ public class Hud  implements Disposable {
 
     }
 
-
+    public float getTotalScore() {
+        return score* INSTANCE.timeCount;
+    }
 
     private Hud(SpriteBatch batch){
         worldTimer = GAME_SECONDS;

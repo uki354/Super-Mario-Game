@@ -26,10 +26,7 @@ import com.uki.mariobros.items.ItemDef;
 import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.sprites.Mario;
-import com.uki.mariobros.tools.B2WorldCreator;
-import com.uki.mariobros.tools.Sounds;
-import com.uki.mariobros.tools.UserInputHandler;
-import com.uki.mariobros.tools.WorldContactListener;
+import com.uki.mariobros.tools.*;
 
 
 import java.util.PriorityQueue;
@@ -39,6 +36,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static com.badlogic.gdx.Input.Keys.*;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
 import static com.uki.mariobros.MarioBros.V_WIDTH;
+import static com.uki.mariobros.tools.HttpClient.URL;
 import static com.uki.mariobros.tools.UserInputHandler.*;
 import static com.uki.mariobros.tools.UserInputHandler.Side.LEFT;
 
@@ -184,6 +182,7 @@ public class PlayScreen  implements Screen {
 
         if(gameOver()){
             game.setScreen(new GameOverScreen(game));
+            saveScore((int) hud.getTotalScore());
             dispose();
         }
         if(LEVEL_FINISHED){
@@ -191,6 +190,10 @@ public class PlayScreen  implements Screen {
             levelUp();
         }
 
+    }
+
+    public void saveScore(Integer totalScore){
+        HttpClient.sendPostRequest(URL, totalScore.toString());
     }
 
     private void levelUp(){

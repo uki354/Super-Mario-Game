@@ -2,16 +2,17 @@ package com.uki.mariobros.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -47,6 +48,18 @@ public class StartScreen implements Screen {
         skin.get("default", TextButton.TextButtonStyle.class).font.getData().setScale(0.4f);
         Gdx.input.setInputProcessor(stage);
 
+
+
+        stage.addActor(drawScreen(false));    }
+
+
+    public void showErrorMessage(){
+        System.out.println("here");
+        stage.clear();
+        stage.addActor(drawScreen(true));
+    }
+
+    public Actor drawScreen(boolean error){
         Table table = new Table();
         table.center();
         table.setFillParent(true);
@@ -69,17 +82,21 @@ public class StartScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 Auth auth = new Auth();
-                auth.authenticate(new User(usernameField.getText(), passwordField.getText()));
+                if(auth.authenticate(new User(usernameField.getText(), passwordField.getText())))
+                    showErrorMessage();
             }
         });
         guestButton.setSize(100,100);
 
-
+        if(error){
+            table.add(new Label("Service unavailable", new Label.LabelStyle(new BitmapFont(), Color.RED)));
+            table.row();
+        }
 
         table.add(usernameLabel);
         table.row();
         table.add(usernameField).size(120,25);
-        table.add(guestButton).padLeft(20).size(100,25).padTop(50);
+        table.add(guestButton).padLeft(20).size(100,25).padTop(10);
         table.row();
         table.add(passwordLabel);
         table.row();
@@ -87,18 +104,16 @@ public class StartScreen implements Screen {
         table.row();
         table.add(login).size(80,25).padTop(20);
 
-
-
-//        table.add(new TextButton("Press enter to start", textButtonStyle)).expandX().padBottom(20);
-        stage.addActor(table);
+        return table;
 
     }
 
-    private void startGame(){
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-            game.setScreen(new TransitionScreen((MarioBros) game,1));
-        }
-    }
+
+
+
+
+
+
 
 
     @Override
@@ -110,7 +125,7 @@ public class StartScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
-        startGame();
+
         batch.begin();
         batch.draw(new Texture("start.jpg"),80,0);
         batch.end();
