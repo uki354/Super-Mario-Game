@@ -9,13 +9,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import com.uki.mariobros.MarioBros;
-
-
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
@@ -25,11 +23,14 @@ public class GameOverScreen  implements Screen {
     
     private final Stage stage;
     private final Game game;
+    private final Skin skin;
 
     public GameOverScreen(MarioBros game){
         this.game = game;        
         stage = new Stage(new FitViewport(V_WIDTH, V_HEIGHT, new OrthographicCamera()), game.getBatch());
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         stage.addActor(drawEndGameScreen());
+
     }
     
     private Table drawEndGameScreen(){
@@ -39,8 +40,8 @@ public class GameOverScreen  implements Screen {
         table.center();
         table.setFillParent(true);
 
-        Label gameOverLabel = new Label("GAME OVER", font);
-        Label playAgain = new Label("Play Again", font);
+        Label gameOverLabel = new Label("GAME OVER", skin);
+        Label playAgain = new Label("Play Again", skin);
         table.add(gameOverLabel).expandX();
         table.row();
         table.add(playAgain).expandX().padTop(10f);
