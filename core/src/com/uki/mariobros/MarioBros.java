@@ -4,7 +4,6 @@ package com.uki.mariobros;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.uki.mariobros.screen.PlayScreen;
 import com.uki.mariobros.screen.StartScreen;
 import com.uki.mariobros.tools.Sounds;
 

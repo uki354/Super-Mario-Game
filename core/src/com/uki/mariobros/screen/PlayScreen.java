@@ -31,7 +31,7 @@ import com.uki.mariobros.tools.*;
 
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+
 
 import static com.badlogic.gdx.Input.Keys.*;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
@@ -88,7 +88,9 @@ public class PlayScreen  implements Screen {
         items = new Array<>();
         itemsToSpawn = new PriorityQueue<>();
         inputHandler = new UserInputHandler(mario);
+
     }
+
 
     public void spawnItem(ItemDef itemDef){
         itemsToSpawn.add(itemDef);
@@ -128,7 +130,16 @@ public class PlayScreen  implements Screen {
 
         world.step(1/60f, 6,2);
         if(!mario.isMarioDead()) {
-            gameCam.position.x = mario.b2Body.getPosition().x;
+            if(!inputHandler.getUseMouse()) {
+                gameCam.position.x = mario.b2Body.getPosition().x;
+            }
+        }
+        if(inputHandler.getUseMouse()){
+            if(mario.b2Body.getPosition().x > viewport.getWorldWidth()){
+                mario.redefineMario(new Vector2(25,20));
+            }else if(mario.b2Body.getPosition().x < 0){
+                mario.redefineMario(new Vector2(viewport.getWorldWidth()-10,20));
+            }
         }
 
         hud.update(time);
@@ -152,11 +163,14 @@ public class PlayScreen  implements Screen {
         if(!mario.isMarioDead()) {
             if (Gdx.input.isKeyPressed(UP))
                 inputHandler.jump(Y_VEL);
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (inputHandler.getUseMouse() ))
                 inputHandler.run(Side.RIGHT);
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || inputHandler.getUseMouse() )
                 inputHandler.run(LEFT);
         }
+
+
+
     }
 
     @Override
@@ -190,6 +204,18 @@ public class PlayScreen  implements Screen {
             levelUp();
         }
 
+    }
+
+    public void removeHud(){
+        hud.getStage().clear();
+        Hud.INSTANCE = null;
+    }
+
+    public UserInputHandler getInputHandler(){
+        return inputHandler;
+    }
+    public Viewport getViewport(){
+        return this.viewport;
     }
 
     public void saveScore(Integer totalScore){

@@ -12,6 +12,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,16 +25,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.security.Auth;
 import com.uki.mariobros.security.User;
-
-
+import com.uki.mariobros.sprites.Mario;
 
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
 import static com.uki.mariobros.MarioBros.V_WIDTH;
+import static com.uki.mariobros.screen.PlayScreen.TEXTURE_PACK;
 
 public class StartScreen implements Screen {
 
@@ -38,6 +44,8 @@ public class StartScreen implements Screen {
     private final Game game;
     private final SpriteBatch batch;
     private final Skin skin;
+    private final PlayScreen playScreen;
+
 
     public StartScreen(MarioBros game){
         this.game = game;
@@ -48,16 +56,21 @@ public class StartScreen implements Screen {
         skin.get("default", TextButton.TextButtonStyle.class).font.getData().setScale(0.4f);
         Gdx.input.setInputProcessor(stage);
 
+        playScreen = new PlayScreen(game,0);
+        playScreen.getInputHandler().setUseMouse(true);
+        playScreen.removeHud();
 
-
-        stage.addActor(drawScreen(false));    }
+        game.setScreen(playScreen);
+        stage.addActor(drawScreen(false));
+    }
 
 
     public void showErrorMessage(){
-        System.out.println("here");
         stage.clear();
         stage.addActor(drawScreen(true));
     }
+
+
 
     public Actor drawScreen(boolean error){
         Table table = new Table();
@@ -126,14 +139,13 @@ public class StartScreen implements Screen {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-        batch.draw(new Texture("start.jpg"),80,0);
-        batch.end();
+        playScreen.render(delta);
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
 
     }
 

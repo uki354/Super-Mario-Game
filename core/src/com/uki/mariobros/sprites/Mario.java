@@ -156,15 +156,21 @@ public class Mario extends Sprite {
         defineMario(startPosition);
     }
 
-    private void defineMario(Vector2 position){
+    public void defineMario(Vector2 position){
         defineMario(position, new Vector2(0,0));
     }
 
     private void redefineMario(){
         Vector2 currentPosition = b2Body.getPosition();
+        redefineMario(currentPosition);
+
+    }
+
+    public void redefineMario(Vector2 position){
         world.destroyBody(b2Body);
-        defineMario(currentPosition);
+        defineMario(position);
         timeToRedefineMario = false;
+
     }
 
     private void defineBigMario() {
