@@ -195,7 +195,7 @@ public class PlayScreen  implements Screen {
         hud.getStage().draw();
 
         if(gameOver()){
-            game.setScreen(new GameOverScreen(game));
+            game.setScreen(new GameOverScreen(game,getHud()));
             saveScore((int) hud.getTotalScore());
             dispose();
         }
@@ -209,6 +209,10 @@ public class PlayScreen  implements Screen {
     public void removeHud(){
         hud.getStage().clear();
         Hud.INSTANCE = null;
+    }
+
+    public Hud getHud(){
+        return this.hud;
     }
 
     public UserInputHandler getInputHandler(){

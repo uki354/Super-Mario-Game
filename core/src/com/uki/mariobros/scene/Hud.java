@@ -101,6 +101,10 @@ public class Hud  implements Disposable {
         return stage;
     }
 
+    public Integer getScore(){
+        return score;
+    }
+
 
 
     @Override
