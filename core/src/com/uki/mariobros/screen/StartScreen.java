@@ -6,17 +6,13 @@ import com.badlogic.gdx.Screen;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,17 +21,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.security.Auth;
 import com.uki.mariobros.security.User;
-import com.uki.mariobros.sprites.Mario;
+
 
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
 import static com.uki.mariobros.MarioBros.V_WIDTH;
-import static com.uki.mariobros.screen.PlayScreen.TEXTURE_PACK;
+
 
 public class StartScreen implements Screen {
 
@@ -81,8 +76,11 @@ public class StartScreen implements Screen {
         TextField usernameField = new TextField("",skin);
         TextField passwordField = new TextField("", skin);
         TextButton guestButton = new TextButton("Play as guest", skin);
+        TextButton signUpButton = new TextButton("Sign up", skin);
+        TextButton login = new TextButton("login", skin);
         passwordField.setPasswordCharacter('*');
         passwordField.setPasswordMode(true);
+
         guestButton.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -91,7 +89,6 @@ public class StartScreen implements Screen {
             }
         });
 
-        TextButton login = new TextButton("login", skin);
         login.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -100,6 +97,17 @@ public class StartScreen implements Screen {
                     showErrorMessage();
             }
         });
+
+        signUpButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Auth auth = new Auth();
+                if(auth.authenticate(new User(usernameField.getText(), passwordField.getText())))
+                    showErrorMessage();
+            }
+        });
+
+
         guestButton.setSize(100,100);
 
         if(error){
@@ -117,6 +125,7 @@ public class StartScreen implements Screen {
         table.add(passwordField).size(120,25);
         table.row();
         table.add(login).size(80,25).padTop(20);
+        table.add(signUpButton).size(80,25).padTop(20);
 
         return table;
 
