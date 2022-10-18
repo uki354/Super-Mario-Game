@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.uki.mariobros.MarioBros;
+import com.uki.mariobros.security.User;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
@@ -22,12 +23,14 @@ public class TransitionScreen implements Screen {
     private final Game game;
     private final int level;
     private float time;
+    private User user;
 
 
-    public TransitionScreen(Game game, int level){
+    public TransitionScreen(Game game, int level, User user){
         this.game = game;
         this.stage = new Stage(new FitViewport(V_WIDTH, V_HEIGHT,new OrthographicCamera()));
         this.level = level;
+        this.user = user;
 
         Table table = new Table();
         table.setFillParent(true);
@@ -48,7 +51,7 @@ public class TransitionScreen implements Screen {
     public void render(float delta) {
         time+= delta;
         if(time > 1){
-            game.setScreen(new PlayScreen((MarioBros) game, level));
+            game.setScreen(new PlayScreen((MarioBros) game, level, user));
         }
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);

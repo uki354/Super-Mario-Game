@@ -17,7 +17,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import com.uki.mariobros.MarioBros;
 import com.uki.mariobros.scene.Hud;
-import com.uki.mariobros.tools.HttpClient;
+import com.uki.mariobros.security.HttpClient;
+import com.uki.mariobros.security.User;
+import com.uki.mariobros.tools.HttpSender;
+
+import java.util.Map;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
@@ -30,10 +34,14 @@ public class GameOverScreen  implements Screen {
     private final Game game;
     private final Skin skin;
     private final Hud hud;
+    private final User user;
+    private HttpClient httpClient;
 
-    public GameOverScreen(MarioBros game, Hud hud){
+    public GameOverScreen(MarioBros game, Hud hud, User user){
         this.game = game;
         this.hud = hud;
+        this.user = user;
+        this.httpClient = new HttpClient(new HttpSender());
         stage = new Stage(new FitViewport(V_WIDTH, V_HEIGHT, new OrthographicCamera()), game.getBatch());
         skin = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
 
@@ -58,17 +66,13 @@ public class GameOverScreen  implements Screen {
                 playAgain();
 
         }});
-
         scoreBoardButton.addListener(new ClickListener(){
-           @Override
-           public void clicked(InputEvent event, float x, float y){
-               if(HttpClient.sendPostRequest("","")){
-                   stage.clear();
-                   stage.addActor(drawScreen(true));
-               };
-           }
-        });
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                httpClient.getLeaderboard(user.getToken());
 
+            }
+        });
 
         table.center();
         table.add(gameOverLabel).size(120,80).colspan(2);
@@ -87,9 +91,15 @@ public class GameOverScreen  implements Screen {
 
     }
 
+    private void drawLeaderboard(Map<String , String> leaderboardMap){
+        Table table = new Table();
+        table.setFillParent(true);
+
+    }
+
     private void playAgain(){
             Hud.INSTANCE = null;
-            game.setScreen(new TransitionScreen(game,1));
+            game.setScreen(new TransitionScreen(game,1, user));
             dispose();
         }
 

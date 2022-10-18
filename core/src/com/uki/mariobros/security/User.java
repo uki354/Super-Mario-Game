@@ -6,11 +6,19 @@ public class User implements Serializable {
 
     private String username;
     private String password;
+    private String token;
+    public boolean loggedIn = false;
 
 
     public User(String username, String password){
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password, String token){
+        this.username = username;
+        this.password = password;
+        this.token = token;
     }
 
     public String getUsername() {
@@ -29,11 +37,21 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public void setToken(String token){
+        this.token = token;
+    }
+
+    public String getToken(){
+        return this.token;
+    }
+
+
+
     @Override
     public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
+        return " {" +
+                "\"username\":\"" + username +  "\""+
+                ", \"password\":\"" + password  + "\""+
                 '}';
     }
 }

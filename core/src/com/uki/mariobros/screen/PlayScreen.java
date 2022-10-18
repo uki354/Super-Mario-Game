@@ -25,6 +25,8 @@ import com.uki.mariobros.items.Item;
 import com.uki.mariobros.items.ItemDef;
 import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
+import com.uki.mariobros.security.HttpClient;
+import com.uki.mariobros.security.User;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.*;
 
@@ -36,7 +38,6 @@ import java.util.Queue;
 import static com.badlogic.gdx.Input.Keys.*;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
 import static com.uki.mariobros.MarioBros.V_WIDTH;
-import static com.uki.mariobros.tools.HttpClient.URL;
 import static com.uki.mariobros.tools.UserInputHandler.*;
 import static com.uki.mariobros.tools.UserInputHandler.Side.LEFT;
 
@@ -57,6 +58,7 @@ public class PlayScreen  implements Screen {
     private final B2WorldCreator creator;
     private final TextureAtlas atlas;
     private final UserInputHandler inputHandler;
+    private User user;
     private int currentLevel;
 
     public static final String TEXTURE_PACK ="Mario_And_Enimes.pack";
@@ -64,7 +66,7 @@ public class PlayScreen  implements Screen {
 
 
 
-    public PlayScreen(MarioBros game, int level){
+    public PlayScreen(MarioBros game, int level, User user){
         this.game = game;
         this.currentLevel = level;
 
@@ -88,7 +90,12 @@ public class PlayScreen  implements Screen {
         items = new Array<>();
         itemsToSpawn = new PriorityQueue<>();
         inputHandler = new UserInputHandler(mario);
+        this.user = user;
 
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 
 
@@ -195,8 +202,10 @@ public class PlayScreen  implements Screen {
         hud.getStage().draw();
 
         if(gameOver()){
-            game.setScreen(new GameOverScreen(game,getHud()));
-            saveScore((int) hud.getTotalScore());
+            game.setScreen(new GameOverScreen(game,getHud(), user));
+            HttpClient httpClient = new HttpClient(new HttpSender());
+            System.out.println(hud.getTotalScore());
+            httpClient.saveScore(user,hud.getTotalScore());
             dispose();
         }
         if(LEVEL_FINISHED){
@@ -222,13 +231,13 @@ public class PlayScreen  implements Screen {
         return this.viewport;
     }
 
-    public void saveScore(Integer totalScore){
-        HttpClient.sendPostRequest(URL, totalScore.toString());
-    }
+//    public void saveScore(Integer totalScore){
+//        HttpClient.sendPostRequest(URL, totalScore.toString());
+//    }
 
     private void levelUp(){
         currentLevel += 1;
-        game.setScreen(new TransitionScreen(game,currentLevel));
+        game.setScreen(new TransitionScreen(game,currentLevel, user));
         hud.updateLevelLabel((currentLevel));
     }
 

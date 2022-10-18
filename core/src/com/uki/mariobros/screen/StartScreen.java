@@ -22,9 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.uki.mariobros.MarioBros;
-import com.uki.mariobros.security.Auth;
+import com.uki.mariobros.security.HttpClient;
 import com.uki.mariobros.security.User;
-
+import com.uki.mariobros.tools.HttpSender;
 
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
@@ -40,6 +40,8 @@ public class StartScreen implements Screen {
     private final SpriteBatch batch;
     private final Skin skin;
     private final PlayScreen playScreen;
+    private final HttpSender httpSender;
+    public static User user = new User("","");
 
 
     public StartScreen(MarioBros game){
@@ -51,12 +53,13 @@ public class StartScreen implements Screen {
         skin.get("default", TextButton.TextButtonStyle.class).font.getData().setScale(0.4f);
         Gdx.input.setInputProcessor(stage);
 
-        playScreen = new PlayScreen(game,0);
+        playScreen = new PlayScreen(game,0,user);
         playScreen.getInputHandler().setUseMouse(true);
         playScreen.removeHud();
 
         game.setScreen(playScreen);
         stage.addActor(drawScreen(false));
+        httpSender = new HttpSender();
     }
 
 
@@ -64,8 +67,6 @@ public class StartScreen implements Screen {
         stage.clear();
         stage.addActor(drawScreen(true));
     }
-
-
 
     public Actor drawScreen(boolean error){
         Table table = new Table();
@@ -84,7 +85,7 @@ public class StartScreen implements Screen {
         guestButton.addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new TransitionScreen(game,1));
+                game.setScreen(new TransitionScreen(game,1,user));
                 dispose();
             }
         });
@@ -92,8 +93,10 @@ public class StartScreen implements Screen {
         login.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Auth auth = new Auth();
-                if(auth.authenticate(new User(usernameField.getText(), passwordField.getText())))
+                HttpClient httpClient = new HttpClient(httpSender);
+                user.setUsername(usernameField.getText());
+                user.setPassword(passwordField.getText());
+                if(httpClient.authenticate(user))
                     showErrorMessage();
             }
         });
@@ -101,13 +104,20 @@ public class StartScreen implements Screen {
         signUpButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Auth auth = new Auth();
-                if(auth.authenticate(new User(usernameField.getText(), passwordField.getText())))
-                    showErrorMessage();
+                HttpClient httpClient = new HttpClient(httpSender);
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                if(checkCredentials(username, password)){
+                    if (httpClient.signUp(new User(username,password)))
+                        showErrorMessage();
+                    else{
+                        user.setUsername(username);
+                        user.setPassword(password);
+                        httpClient.authenticate(user);
+                    }
+                }else showErrorMessage();
             }
         });
-
-
         guestButton.setSize(100,100);
 
         if(error){
@@ -131,13 +141,9 @@ public class StartScreen implements Screen {
 
     }
 
-
-
-
-
-
-
-
+    private boolean checkCredentials(String username, String password){
+      return username.length() > 3 && password.length() > 3;
+    }
 
     @Override
     public void show() {
@@ -148,6 +154,12 @@ public class StartScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+
+        if (user.loggedIn){
+
+            game.setScreen(new TransitionScreen(game,1,user));
+            dispose();
+        }
 
         playScreen.render(delta);
         stage.draw();
