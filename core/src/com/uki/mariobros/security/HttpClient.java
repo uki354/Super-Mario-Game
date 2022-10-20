@@ -1,13 +1,12 @@
 package com.uki.mariobros.security;
 import com.uki.mariobros.tools.HttpSender;
+import java.util.List;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class HttpClient {
     public static boolean  isErrorOccurred = false;
     private final HttpSender httpSender;
-    public static Map<String, String> leaderboard;
+
 
     public HttpClient(HttpSender httpSender){
         this.httpSender = httpSender;
@@ -27,12 +26,13 @@ public class HttpClient {
         String jsonString = "{\"username\":\"" + user.getUsername() + "\"," +
                             "\"score\":\"" + score + "\"}";
         httpSender.sendPostRequest(HttpSender.URL + "/score/save", jsonString, user.getToken(), new DefaultListener());
+        getLeaderboard(user.getToken());
 
     }
 
-    public void getLeaderboard(String token){
-        Map<String, String> map  = new HashMap<>();
+    public List<LeaderboardListener.LeaderboardUser> getLeaderboard(String token){
         httpSender.sendGetRequest(HttpSender.URL + "/score/leaderboard",token, new LeaderboardListener());
+        return LeaderboardListener.getLeaderboardUsers();
     }
 
 

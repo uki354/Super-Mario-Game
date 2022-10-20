@@ -10,6 +10,7 @@ public class LoginListener implements Net.HttpResponseListener {
         if (httpResponse.getStatus().getStatusCode() ==  200) {
             String token = httpResponse.getResultAsString();
             StartScreen.user.setToken(token.substring(1, token.length() - 1));
+
             StartScreen.user.loggedIn = true;
         }else{
             HttpClient.isErrorOccurred = true;
