@@ -17,13 +17,17 @@ public class LeaderboardListener implements Net.HttpResponseListener {
 
     @Override
     public void handleHttpResponse(Net.HttpResponse httpResponse) {
-        JsonReader jsonReader = new JsonReader();
-        JsonValue jsonValue = jsonReader.parse(httpResponse.getResultAsString());
-        for (JsonValue json: jsonValue){
-            String username = json.getString("username");
-            String score = json.getString("score");
-            LeaderboardUser user = new LeaderboardUser(username, score);
-            leaderboardUsers.add(user);
+        if(httpResponse.getStatus().getStatusCode() == 200){
+            leaderboardUsers.clear();
+            JsonReader jsonReader = new JsonReader();
+            JsonValue jsonValue = jsonReader.parse(httpResponse.getResultAsString());
+            for (JsonValue json: jsonValue){
+                String username = json.getString("username");
+                String score = json.getString("score");
+                LeaderboardUser user = new LeaderboardUser(username, score);
+                leaderboardUsers.add(user);
+        }
+
         }
 
 
