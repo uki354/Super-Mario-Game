@@ -26,6 +26,7 @@ import com.uki.mariobros.items.ItemDef;
 import com.uki.mariobros.items.Mushroom;
 import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.security.HttpClient;
+import com.uki.mariobros.security.HttpSender;
 import com.uki.mariobros.security.User;
 import com.uki.mariobros.sprites.Mario;
 import com.uki.mariobros.tools.*;

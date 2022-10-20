@@ -1,4 +1,4 @@
-package com.uki.mariobros.tools;
+package com.uki.mariobros.security;
 
 
 import com.badlogic.gdx.Gdx;

@@ -20,7 +20,7 @@ import com.uki.mariobros.scene.Hud;
 import com.uki.mariobros.security.HttpClient;
 import com.uki.mariobros.security.LeaderboardListener;
 import com.uki.mariobros.security.User;
-import com.uki.mariobros.tools.HttpSender;
+import com.uki.mariobros.security.HttpSender;
 
 import java.util.List;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
