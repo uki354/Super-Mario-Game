@@ -100,9 +100,18 @@ public class GameOverScreen  implements Screen {
             int place = 1;
 
             for (LeaderboardListener.LeaderboardUser u : LeaderboardListener.getLeaderboardUsers()) {
-                table.add(new Label(place++ + ". " + u.getUsername() + ": " + u.getScore(), skin));
+                table.add(new Label(place++ + ". " + u.getUsername() + ": " + u.getScore(), skin)).size(100,10).padTop(5);
                 table.row();
             }
+            TextButton playAgainButton = new TextButton("Play again", skin);
+            playAgainButton.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y){
+                    playAgain();
+
+                }});
+            table.add(playAgainButton).size(250,30).padTop(5);
+
             return table;
 
         }
