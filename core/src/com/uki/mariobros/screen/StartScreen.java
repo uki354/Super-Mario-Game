@@ -22,9 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.uki.mariobros.MarioBros;
-import com.uki.mariobros.security.HttpClient;
-import com.uki.mariobros.security.User;
-import com.uki.mariobros.security.HttpSender;
+import com.uki.mariobros.http.HttpClient;
+import com.uki.mariobros.http.User;
+import com.uki.mariobros.http.HttpSender;
 
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;

@@ -1,4 +1,4 @@
-package com.uki.mariobros.security;
+package com.uki.mariobros.http;
 
 
 import com.badlogic.gdx.Gdx;

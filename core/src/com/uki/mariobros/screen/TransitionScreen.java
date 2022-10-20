@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.uki.mariobros.MarioBros;
-import com.uki.mariobros.security.User;
+import com.uki.mariobros.http.User;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.uki.mariobros.MarioBros.V_HEIGHT;
