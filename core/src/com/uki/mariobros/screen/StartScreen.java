@@ -42,6 +42,7 @@ public class StartScreen implements Screen {
     private final PlayScreen playScreen;
     private final HttpSender httpSender;
     public static User user = new User("","");
+    public static boolean errorOccurred;
 
 
     public StartScreen(MarioBros game){
@@ -64,6 +65,7 @@ public class StartScreen implements Screen {
 
 
     public void showErrorMessage(){
+        errorOccurred = false;
         stage.clear();
         stage.addActor(drawScreen(true));
     }
@@ -96,8 +98,8 @@ public class StartScreen implements Screen {
                 HttpClient httpClient = new HttpClient(httpSender);
                 user.setUsername(usernameField.getText());
                 user.setPassword(passwordField.getText());
-                if(httpClient.authenticate(user))
-                    showErrorMessage();
+                httpClient.authenticate(user);
+
             }
         });
 
@@ -156,10 +158,11 @@ public class StartScreen implements Screen {
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         if (user.loggedIn){
-
             game.setScreen(new TransitionScreen(game,1,user));
             dispose();
         }
+        if(errorOccurred)
+            showErrorMessage();
 
         playScreen.render(delta);
         stage.draw();

@@ -13,18 +13,22 @@ public class LoginListener implements Net.HttpResponseListener {
 
             StartScreen.user.loggedIn = true;
         }else{
-            HttpClient.isErrorOccurred = true;
+            StartScreen.errorOccurred = true;
+
         }
     }
 
 
     @Override
     public void failed(Throwable throwable) {
+        StartScreen.errorOccurred = true;
 
     }
 
     @Override
     public void cancelled() {
+        StartScreen.errorOccurred = true;
+
 
     }
 }
