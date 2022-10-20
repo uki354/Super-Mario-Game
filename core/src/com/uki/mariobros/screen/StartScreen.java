@@ -42,7 +42,9 @@ public class StartScreen implements Screen {
     private final PlayScreen playScreen;
     private final HttpSender httpSender;
     public static User user = new User("","");
-    public static boolean errorOccurred;
+    private final HttpClient httpClient;
+    public static boolean errorOccurred = false;
+    public static boolean successfulSignUp = false;
 
 
     public StartScreen(MarioBros game){
@@ -50,6 +52,7 @@ public class StartScreen implements Screen {
         this.batch = (SpriteBatch) game.getBatch();
         this.stage = new Stage(new FitViewport(V_WIDTH, V_HEIGHT, new OrthographicCamera()), game.getBatch());
         this.skin = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
+        this.httpClient = new HttpClient(new HttpSender());
         skin.getFont("font").getData().setScale(0.5f);
         skin.get("default", TextButton.TextButtonStyle.class).font.getData().setScale(0.4f);
         Gdx.input.setInputProcessor(stage);
@@ -95,7 +98,6 @@ public class StartScreen implements Screen {
         login.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                HttpClient httpClient = new HttpClient(httpSender);
                 user.setUsername(usernameField.getText());
                 user.setPassword(passwordField.getText());
                 httpClient.authenticate(user);
@@ -106,18 +108,12 @@ public class StartScreen implements Screen {
         signUpButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                HttpClient httpClient = new HttpClient(httpSender);
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-                if(checkCredentials(username, password)){
-                    if (httpClient.signUp(new User(username,password)))
-                        showErrorMessage();
-                    else{
-                        user.setUsername(username);
-                        user.setPassword(password);
-                        httpClient.authenticate(user);
-                    }
-                }else showErrorMessage();
+                user.setUsername(usernameField.getText());
+                user.setPassword(passwordField.getText());
+                if(checkCredentials(usernameField.getText(), passwordField.getText())){
+                    httpClient.signUp(user);
+
+                }
             }
         });
         guestButton.setSize(100,100);
@@ -163,6 +159,8 @@ public class StartScreen implements Screen {
         }
         if(errorOccurred)
             showErrorMessage();
+        if(successfulSignUp)
+            httpClient.authenticate(user);
 
         playScreen.render(delta);
         stage.draw();
