@@ -5,16 +5,33 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+
+
 import static com.badlogic.gdx.Net.HttpMethods.GET;
 import static com.badlogic.gdx.Net.HttpMethods.POST;
 
 public class HttpSender {
 
-    public static final String URL = "http://localhost:8080/api";
+    public static final String URL;
+
+    static {
+        try {
+            URL = "http://" + Inet4Address.getLocalHost().getHostAddress() + ":8080/api";
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void sendPostRequest(String url, String body, Net.HttpResponseListener listener){
         Net.HttpRequest request = configurePostRequest(url, body);
         Gdx.net.sendHttpRequest(request, listener);
+        try {
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
